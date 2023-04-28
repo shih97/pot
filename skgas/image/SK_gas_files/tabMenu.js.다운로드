@@ -1,0 +1,158 @@
+
+
+function focusMenu(s, s1) {
+    /*  gnbOverId = s;
+        if(s1 != 0)
+        {
+            gnbCurrentId = s1.substr(0,1);
+        }
+        */
+    for (i = 1; i <= 5; i++) {
+        document.getElementById("gnb0" + i).src = "/Images/common/mn0" + i + "_off.gif";
+        $('#on_depth0' + i).css("display", "none");
+    }
+
+    /*$('#on_depth0'+s).css("display","block");
+    $('#on_depth0'+s).css("margin-top","-9px");*/
+
+    // if (s1 != 0 && s1 != 8 && s1 != 10)
+    if (s1 != 0) {
+        //  console.log(s1);
+        document.getElementById("gnb0" + s1.substr(0, 1)).src = "/Images/common/mn0" + s1.substr(0, 1) + "_on.gif";
+    }
+
+    document.getElementById("gnb0" + s).src = "/Images/common/mn0" + s + "_on.gif";
+
+    focusOutSubMenu(1, 8);
+    focusOutSubMenu(2, 3);
+    focusOutSubMenu(3, 2);
+    focusOutSubMenu(4, 2);
+    focusOutSubMenu(5, 2);
+}
+
+function focusSubMenu(parentIndex, index, lastIndex) {
+
+    //  gnbOverId = parentIndex;
+    //clearTimeout(gnbGap);
+    //console.log("focusSubMenu"+gnbOverId)
+    for (i = 1; i <= lastIndex; i++) {
+        //document.getElementById("gnb0"+parentIndex).src = "/Images/common/mn0"+parentIndex+"_on.gif";
+        document.getElementById("gnb0" + parentIndex + "0" + i).src = "/Images/common/mn0" + parentIndex + "_0" + i + "_off.gif";
+    }
+    document.getElementById("gnb0" + parentIndex + "0" + index).src = "/Images/common/mn0" + parentIndex + "_0" + index + "_on.gif";
+}
+var gnbGap;
+
+function gnbTimeout(gnbId) {
+    gnbOverId = 0;
+    gnbGap = setTimeout("focusOutMenu(" + gnbId + ")", 500);
+    //  console.log('gnbTimeout'+gnbOverId)
+
+}
+
+
+function focusOutMenu(s1) {
+
+    if (gnbOverId == 0) {
+        $('#on_depth0' + s1).css("display", "none");
+        document.getElementById("gnb0" + s1).src = "/Images/common/mn0" + s1 + "_off.gif";
+    }
+    return;
+    //console.log("focusOutMenu : "+gnbOverId);
+
+
+    for (i = 1; i <= 6; i++) {
+        document.getElementById("gnb0" + i).src = "/Images/common/mn0" + i + "_off.gif";
+        $('#on_depth0' + i).css("display", "none");
+    }
+
+    // if (s1 != 0 && s1 != 8 && s1 != 10)
+    // {
+    //  document.getElementById("gnb0"+s1.substr(0,1)).src = "/Images/common/mn0"+s1.substr(0,1)+"_on.gif";
+    // }
+    if (s1 != 0) {
+        document.getElementById("gnb0" + s1.substr(0, 1)).src = "/Images/common/mn0" + s1.substr(0, 1) + "_on.gif";
+    }
+
+}
+
+function focusResetMenu(s1) {
+
+    for (i = 1; i <= 5; i++) {
+        document.getElementById("gnb0" + i).src = "/Images/common/mn0" + i + "_off.gif";
+    }
+
+    // if (s1 !=0 && s1 != 8 && s1 != 10)
+    if (s1 != 0) {
+        document.getElementById("gnb0" + s1.substr(0, 1)).src = "/Images/common/mn0" + s1.substr(0, 1) + "_on.gif";
+    }
+}
+
+function focusOutSubMenu(parentIndex, lastIndex) {
+
+    for (i = 1; i <= lastIndex; i++) {
+        document.getElementById("gnb0" + parentIndex + "0" + i).src = "/Images/common/mn0" + parentIndex + "_0" + i + "_off.gif";
+
+    }
+
+}
+
+
+function lastFocusMenu(s, s1) {
+
+
+    for (i = 1; i <= 5; i++) {
+        document.getElementById("gnb0" + i).src = "/Images/common/mn0" + i + "_off.gif";
+    }
+
+    if (s1 != 0 && s1 != 8 && s1 != 10) {
+        document.getElementById("gnb0" + s1.substr(0, 1)).src = "/Images/common/mn0" + s1.substr(0, 1) + "_on.gif";
+    }
+
+    focusOutSubMenu(5, 2);
+    $('#on_depth0' + s).css("display", "none");
+    //  console.log("last : " + $("#on_depth0"+s))
+
+}
+
+function leftFocusMenu(id01) {
+    $('#' + id01).css("display", "block");
+}
+
+/* right QuickMenu TabFocusing */
+
+var rightIcon_Arr = new Array();
+rightIcon_Arr = ["", "gasoline", "kerosene", "jet", "diesel", "lpg", "asphalt", "aromatic", "solvent"]
+
+function rightFocusMenu(id01) {
+    rightFocusOutMenu();
+    //console.log(rightIcon_Arr[id01]);
+    document.getElementById(rightIcon_Arr[id01]).src = "/Images/icon/" + rightIcon_Arr[id01] + "_on.gif";
+}
+
+function rightFocusOutMenu() {
+    for (i = 1; i <= rightIcon_Arr.length - 1; i++) {
+        //console.log(rightIcon_Arr[i]);
+        document.getElementById(rightIcon_Arr[i]).src = "/Images/icon/" + rightIcon_Arr[i] + "_off.gif";
+    }
+}
+
+
+/*main OurBusiness Tab Focusing */
+
+function mainFocusMenu(id01) {
+    mainFocusOutMenu();
+    document.getElementById("main_quick_0" + id01).src = "/Images/main/img_our_0" + id01 + "_on.gif";
+}
+
+function mainFocusOutMenu() {
+    for (i = 1; i <= 3; i++) {
+        //console.log(mainIcon_Arr[i]);
+        document.getElementById("main_quick_0" + i).src = "/Images/main/img_our_0" + i + "_off.gif";
+    }
+}
+
+/*팝업창 호출*/
+function LPGpopup() {
+    window.open("/main/popup_qna02.html", "_blank", "width=655px,height=830px,scrollbars=no,resizeable=no");
+}

@@ -1,0 +1,1847 @@
+//여기서 부터는 TextBox 입니다.
+
+
+UtilTextBox = function () {};
+UtilTextBox.Textbox = function (txtId) {
+    this.txtId = txtId; //the textbox id ;
+    return this;
+};
+
+/***************************************************
+
+클라이언트 이벤트 : 공통 스크립트 등록
+
+****************************************************/
+
+// 문자열에서 특정 문자 제거 함수
+UtilTextBox.Textbox.prototype.Replace = function (strString, strChar) {
+
+    var strTmp = '';
+    for (i = 0; i < strString.length; i++) {
+        if (strString.charAt(i) != strChar) {
+            strTmp = strTmp + strString.charAt(i);
+        }
+    }
+    return strTmp;
+}
+
+// 자동컴마입력
+UtilTextBox.Textbox.prototype.CommaFormat = function (thisone) {
+    var txtNumber = '' + thisone.value;
+    var rxSplit = new RegExp('([0-9])([0-9][0-9][0-9][,.])');
+    var arrNumber = txtNumber.split('.');
+    arrNumber[0] += '.';
+    do {
+        arrNumber[0] = arrNumber[0].replace(rxSplit, '$1,$2');
+    }
+    while (rxSplit.test(arrNumber[0]));
+    if (arrNumber.length > 1) {
+        thisone.value = arrNumber.join('');
+    } else {
+        thisone.value = arrNumber[0].split('.')[0];
+    }
+}
+
+// 콤마와 대쉬를 제거하고 선택상태로 변경해준다.
+UtilTextBox.Textbox.prototype.NumTxtSelect = function (thisone) {
+    thisone.value = this.Replace(thisone.value, ',');
+    thisone.value = this.Replace(thisone.value, '-');
+    thisone.select();
+}
+
+// '/' 제거하고 선택상태로 변경해준다.
+UtilTextBox.Textbox.prototype.NumPageSelect = function (thisone) {
+    thisone.value = this.Replace(thisone.value, 'index.html');
+    thisone.select();
+}
+
+// 콜론문자를 제거하고 선택상태로 변경해준다. (시간포맷 텍스트박스에서 사용)
+UtilTextBox.Textbox.prototype.TxtTimeSelect = function (thisone) {
+    thisone.value = this.Replace(thisone.value, ':');
+    thisone.select();
+}
+
+// 콤마 제거하고 선택상태로 변경해준다.
+UtilTextBox.Textbox.prototype.CurrencySelect = function (thisone) {
+    thisone.value = this.Replace(thisone.value, ',');
+    thisone.select();
+}
+
+// 선택상태로 변경해준다.
+UtilTextBox.Textbox.prototype.TxtSelect = function (thisone) {
+    thisone.select();
+}
+
+// IP 입력창을 선택상태로 변경해준다.
+UtilTextBox.Textbox.prototype.IP_TxtSelect = function (thisone) {
+
+    thisone.value = this.Replace(thisone.value, '.');
+    thisone.select();
+}
+
+
+// IP 입력창의 점을 자동으로 찍어준다.
+UtilTextBox.Textbox.prototype.ShowIP = function (thisone) {
+    var len = thisone.value.length;
+    var tmpValue = thisone.value;
+
+    // 3자리 이하라면 점을 찍을 일은 없다.  
+    if (len <= 3) {
+        return;
+    }
+
+
+    if (len > 9) {
+        thisone.value = tmpValue.substring(0, 3) + '.' + tmpValue.substring(3, 6) + '.' + tmpValue.substring(6, 9) + '.' + tmpValue.substring(9);
+    } else if (len > 6) {
+        thisone.value = tmpValue.substring(0, 3) + '.' + tmpValue.substring(3, 6) + '.' + tmpValue.substring(6);
+    } else if (len > 3) {
+        thisone.value = tmpValue.substring(0, 3) + '.' + tmpValue.substring(3);
+    }
+}
+
+
+/***************************************************
+
+클라이언트 이벤트 : Basic 일반 텍스트박스 입력 관련
+
+****************************************************/
+UtilTextBox.Textbox.prototype.RaisePostBack = function (targetForm, eventTarget, eventArgs) {
+    try {
+        //        targetForm.__EVENTTARGET.value = eventTarget.split("$").join(":");
+        //        targetForm.__EVENTARGUMENT.value = eventArgs;
+        //        targetForm.submit();
+        document.getElementById(eventTarget).click();
+        // __doPostBack(document.getElementById(eventTarget).name, '');
+    } catch (exception) {
+        GtCMM.OpenErrorMessage(exception.description);
+    }
+}
+
+UtilTextBox.Textbox.prototype.IsKeyEventEnter = function (keycode, thisone, TextMode, clickButtonID) {
+    try {
+        if (keycode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+            var objBtn = document.getElementById(clickButtonID);
+
+            if (clickButtonID != '') {
+
+                //            objBtn.click();
+                //            thisone.focus();
+                //            thisone.select();
+                //                var Myform;
+                //                Myform = thisone.form
+                //this.RaisePostBack(Myform, clickButtonID, '');
+                //                Myform.__EVENTTARGET.value = clickButtonID.split("_").join(":");
+                //                Myform.__EVENTARGUMENT.value = "";
+                //                Myform.submit();
+                return false;
+            }
+        }
+    } catch (exception) {
+        GtCMM.OpenErrorMessage(exception.description);
+    }
+}
+
+UtilTextBox.Textbox.prototype.BasicKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (clickButtonID != '') {
+
+            //            objBtn.click();
+            //            thisone.focus();
+            //            thisone.select();
+            var Myform;
+            Myform = thisone.form
+            this.RaisePostBack(Myform, clickButtonID, '');
+            return false;
+        }
+    }
+    // this.IsKeyEventEnter(event.keyCode, thisone, TextMode, clickButtonID);
+
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+}
+
+
+// 입력 가능한 필드를 초과했는지 체크해준다.
+UtilTextBox.Textbox.prototype.CheckMaxLength = function (thisone, maxLength) {
+    if (thisone.value == '' || maxLength == '0') {
+        return;
+    }
+
+    var totalLength = 0;
+
+    // 전체가 한글 2byte로 이루어졌을때의 길이를 구한다.
+    var maxKoreanLength = thisone.value.length * 2;
+
+    // 만일 전체가 한글로 이루어졌더라도 최대 크기가 더 크다면 계산 자체가 무의미하다.
+    // 즉, 최대 2000byte 입력이 가능한 텍스트박스에 400개의 문자가 입력되었다면 전부 한글이라고 해봐야 800byte이다.
+    // 이때는 계산자체가 무의미하다.
+    if (maxKoreanLength < maxLength) {
+        return;
+    }
+
+
+    for (i = 0; i < thisone.value.length; i++) {
+        // 현재 문자의 유니코드값을 구한다.
+        var currUnicodeNum = thisone.value.charCodeAt(i);
+
+        if (currUnicodeNum > 127) {
+            totalLength += 2;
+        } else {
+            totalLength += 1;
+        }
+
+        // 최대 수용갯수를 넘었으면 더이상 크기를 계산하지 않는다.
+        if (totalLength > parseInt(maxLength)) {
+            break;
+        }
+    }
+
+    if (totalLength > parseInt(maxLength)) {
+        //alert('현재 텍스트박스는 ' + maxLength + 'Byte까지만 입력이 가능합니다.\r\n\r\n총 ' + totalLength + 'Byte 입력하셨습니다.\r\n\r\n한글은 2Byte로 계산됩니다.' );
+
+        GtDivMsg.OpenInform('현재 텍스트박스는 ' + maxLength + 'Byte까지만 입력이 가능합니다.\r\n\r\n총 ' + totalLength + 'Byte 입력하셨습니다.\r\n\r\n한글은 2Byte로 계산됩니다.', "");
+        //alert('입력하신 내용이 현재필드의 최대 수용갯수를 초과했습니다. \n 한글의 경우 ');
+
+        thisone.focus();
+        thisone.select();
+    }
+}
+
+
+
+/***************************************************
+
+클라이언트 이벤트 : Time 텍스트박스 입력 관련
+
+****************************************************/
+// 자동콜론입력 (시간 텍스트 박스에서 사용)
+UtilTextBox.Textbox.prototype.TimeFormat = function (thisone) {
+    if (thisone.value == '') {
+        return;
+    }
+
+    CheckTime(thisone);
+
+    var input = thisone.value.replace(/:/g, "");
+    var inputHours = input.substr(0, 2);
+    var inputMinutes = input.substr(2, 2);
+    var inputSeconds = input.substr(4, 2);
+    var resultTime = new Date(0, 0, 0, inputHours, inputMinutes, inputSeconds);
+
+    if (resultTime.getHours() != inputHours || resultTime.getMinutes() != inputMinutes || resultTime.getSeconds() != inputSeconds) {
+        thisone.value = "";
+    } else {
+        thisone.value = inputHours + ":" + inputMinutes + ":" + inputSeconds;
+    }
+}
+
+// 자동콜론입력 (시간 텍스트 박스에서 사용)
+UtilTextBox.Textbox.prototype.TimeFormat_HHMM = function (thisone) {
+    if (thisone.value == '') {
+        return;
+    }
+
+    CheckTime_HHMM(thisone);
+
+    var input = thisone.value.replace(/:/g, "");
+    var inputHours = input.substr(0, 2);
+    var inputMinutes = input.substr(2, 2);
+
+    var resultTime = new Date(0, 0, 0, inputHours, inputMinutes, 0);
+
+    if (resultTime.getHours() != inputHours || resultTime.getMinutes() != inputMinutes) {
+        thisone.value = "";
+    } else {
+        thisone.value = inputHours + ":" + inputMinutes;
+    }
+}
+
+UtilTextBox.Textbox.prototype.CheckTime = function (thisone) {
+    // 오늘 날짜를 구함
+    now = new Date();
+
+    var tmpValue = thisone.value.replace(/:/g, "");
+
+    if (tmpValue.length < 2) {
+        thisone.value = '000000';
+        return true;
+    } else if (tmpValue.length < 4) {
+        thisone.value = tmpValue.substr(0, 2) + '0000';
+        return true;
+    } else if (tmpValue.length < 6) {
+        thisone.value = tmpValue.substr(0, 2) + tmpValue.substr(2, 2) + '00';
+        return true;
+    }
+
+    //  if(tmpValue.length < 2)
+    //  {
+    //    thisone.value = makeFormatTime(now.getHours()) + makeFormatTime(now.getMinutes()) + makeFormatTime(now.getSeconds());
+    //    return true;
+    //  }
+    //  else if(tmpValue.length < 4)
+    //  {
+    //    thisone.value = tmpValue.substr(0,2) + makeFormatTime(now.getMinutes()) + makeFormatTime(now.getSeconds());
+    //    return true;
+    //  }
+    //  else if(tmpValue.length < 6)
+    //  {
+    //    thisone.value = tmpValue.substr(0,2) + tmpValue.substr(2,2) + makeFormatTime(now.getSeconds());
+    //    return true;
+    //  }
+}
+
+UtilTextBox.Textbox.prototype.CheckTime_HHMM = function (thisone) {
+    // 오늘 날짜를 구함
+    now = new Date();
+
+    var tmpValue = thisone.value.replace(/:/g, "");
+
+    if (tmpValue.length < 2) {
+        thisone.value = '0000';
+        return true;
+    } else if (tmpValue.length < 4) {
+        thisone.value = tmpValue.substr(0, 2) + '00';
+        return true;
+    }
+}
+
+UtilTextBox.Textbox.prototype.TimeKeyUp = function (thisone) {
+    if (event.ctrlKey || event.shiftKey || event.keyCode == 9) {
+        return false;
+    }
+
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+        return false;
+    }
+
+    // 백스페이스는 허용하고 또한 유효성 체크를 수행하지 않는다.
+    if (event.keyCode == 8) {
+        return true;
+    }
+
+    //var tmpValue = thisone.value.replace(/:/g,"");
+    //thisone.value = Replace(thisone.value,':');
+    var tmpValue = this.Replace(thisone.value, ':');
+
+    // 입력이 되는 순간 오류를 정정해준다.
+    if (tmpValue.length == 2) {
+        thisone.value = validateHH(tmpValue.substring(0, 2)) + ':';
+    } else if (tmpValue.length == 4) {
+        var Hour = tmpValue.substring(0, 2);
+        Hour = validateHH(Hour);
+        thisone.value = Hour + ':' + validateMMSS(tmpValue.substring(2, 4)) + ':';
+    } else if (tmpValue.length == 6) {
+        var Hour = tmpValue.substring(0, 2);
+        Hour = validateHH(Hour);
+
+        var Minute = tmpValue.substring(2, 4);
+        Minute = validateMMSS(Minute);
+        thisone.value = Hour + ':' + Minute + ':' + validateMMSS(tmpValue.substring(4, 6));
+    }
+}
+
+UtilTextBox.Textbox.prototype.TimeKeyUp_HHMM = function (thisone) {
+    if (event.ctrlKey || event.shiftKey || event.keyCode == 9) {
+        return false;
+    }
+
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+        return false;
+    }
+
+    // 백스페이스는 허용하고 또한 유효성 체크를 수행하지 않는다.
+    if (event.keyCode == 8) {
+        return true;
+    }
+
+    //var tmpValue = thisone.value.replace(/:/g,"");
+    //thisone.value = Replace(thisone.value,':');
+    var tmpValue = this.Replace(thisone.value, ':');
+
+    // 입력이 되는 순간 오류를 정정해준다.
+    if (tmpValue.length == 2) {
+        thisone.value = validateHH(tmpValue.substring(0, 2)) + ':';
+    } else if (tmpValue.length == 4) {
+        var Hour = tmpValue.substring(0, 2);
+        Hour = validateHH(Hour);
+        thisone.value = Hour + ':' + validateMMSS(tmpValue.substring(2, 4));
+    }
+    //    else if(tmpValue.length == 6)
+    //    {
+    //        var Hour = tmpValue.substring(0,2);
+    //        Hour = validateHH(Hour);
+    //        
+    //        var Minute = tmpValue.substring(2,4);
+    //        Minute = validateMMSS(Minute);
+    //        thisone.value = Hour + ':' + Minute + ':' + validateMMSS(tmpValue.substring(4,6));
+    //    }
+}
+
+UtilTextBox.Textbox.prototype.validateHH = function (value) {
+    if (value > '23' || value < '00') {
+        return '01';
+    } else {
+        return value;
+    }
+}
+
+UtilTextBox.Textbox.prototype.makeFormatTime = function (value) {
+    if (value < 10) {
+        return '0' + value.toString();
+    } else {
+        return value + '';
+    }
+}
+
+UtilTextBox.Textbox.prototype.validateMMSS = function (value) {
+
+    if (value > '59' || value < '00') {
+        return '01';
+    } else {
+        return value;
+    }
+}
+
+
+
+/***************************************************
+
+클라이언트 이벤트 : 금액(Currency) 입력 관련
+
+****************************************************/
+
+// 금액입력 (오직 숫자와 첫번째 자리에 오는 대쉬만 허용)
+UtilTextBox.Textbox.prototype.CurrencyKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 금액은 첫번째에 위치하는 -값만을 허용한다.
+    if (event.keyCode == 189 || event.keyCode == 109) {
+        if (thisone.value == '') {
+            event.returnValue = true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // (-) => 189 109,  (.) => 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) ||
+        event.keyCode == 189 || event.keyCode == 109 || event.keyCode == 189) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+/***************************************************
+
+클라이언트 이벤트 : 금액(Currency_Point) 입력 관련
+
+****************************************************/
+
+// 금액입력 (오직 숫자와 첫번째 자리에 오는 대쉬만 허용)
+UtilTextBox.Textbox.prototype.Currency_PointKeyDown = function (thisone, isEnterTAB, TextMode, PointSize, clickButtonID) {
+
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 금액은 첫번째에 위치하는 -값만을 허용한다.
+    if (event.keyCode == 189 || event.keyCode == 109) {
+        if (thisone.value == '') {
+            event.returnValue = true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 소수점은 첫번째 자리에 올수없으며, 2번이상 쓰일수없다.
+    if (event.keyCode == 190 || event.keyCode == 110) {
+        // 첫번째에 오는 - 를 제외하고 입력된 숫자가 없다면 소수점을 입력할수없다.
+        if (this.Replace(thisone.value, '-').length > 0) {
+            // 소수점은 2번이상 쓰일수없다.
+            if (thisone.value.indexOf('.') == -1) {
+                event.returnValue = true;
+            } else {
+                event.returnValue = false;
+                return false;
+            }
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+
+    // (-) => 189 109,  (.) => 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) ||
+        event.keyCode == 189 || event.keyCode == 109 || event.keyCode == 189 || event.keyCode == 110 || event.keyCode == 190) {
+
+        var isMinus = thisone.value.indexOf('-');
+        var pointPosition = '';
+        var tmpValue = this.Replace(thisone.value, '-');
+
+        pointPosition = tmpValue.indexOf('.');
+
+        // 소수점입력이 PointSize 이상으로 입력되는것을 막는다.
+
+        if (pointPosition > -1 && tmpValue.substring(tmpValue.indexOf('.') + 1).length + 1 > PointSize) {
+            var underPointSize = tmpValue.substring(tmpValue.indexOf('.') + 1).length;
+
+            if (underPointSize + 1 >= PointSize) {
+
+                if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {
+                    event.returnValue = false;
+                    return false;
+                }
+            }
+        }
+
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+
+
+/***************************************************
+
+클라이언트 이벤트 : 오직 숫자만 입력 제어 관련
+
+****************************************************/
+
+// 오직 숫자만 입력이 가능
+UtilTextBox.Textbox.prototype.NumericOnlyKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+/***************************************************
+
+클라이언트 이벤트 : 숫자와 소수점 입력 제어 관련
+
+****************************************************/
+
+// 오직 숫자와 소수점만을 입력가능
+UtilTextBox.Textbox.prototype.NumericOnly_PointKeyDown = function (thisone, isEnterTAB, TextMode, PointSize, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 금액은 첫번째에 위치하는 -값만을 허용한다.
+    if (event.keyCode == 189 || event.keyCode == 109) {
+        if (thisone.value == '') {
+            event.returnValue = true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 소수점은 첫번째 자리에 올수없으며, 2번이상 쓰일수없다.
+    if (event.keyCode == 190 || event.keyCode == 110) {
+        // 첫번째에 오는 - 를 제외하고 입력된 숫자가 없다면 소수점을 입력할수없다.
+        if (this.Replace(thisone.value, '-').length > 0) {
+            // 소수점은 2번이상 쓰일수없다.
+            if (thisone.value.indexOf('.') == -1) {
+                event.returnValue = true;
+            } else {
+                event.returnValue = false;
+                return false;
+            }
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) ||
+        event.keyCode == 191 || event.keyCode == 110 || event.keyCode == 190) {
+        var isMinus = thisone.value.indexOf('-');
+        var pointPosition = '';
+        var tmpValue = this.Replace(thisone.value, '-');
+
+        pointPosition = tmpValue.indexOf('.');
+
+        // 소수점입력이 PointSize 이상으로 입력되는것을 막는다.
+
+        if (pointPosition > -1 && tmpValue.substring(tmpValue.indexOf('.') + 1).length + 1 > PointSize) {
+            var underPointSize = tmpValue.substring(tmpValue.indexOf('.') + 1).length;
+
+            if (underPointSize + 1 >= PointSize) {
+
+                if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {
+                    event.returnValue = false;
+                    return false;
+                }
+            }
+        }
+
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+
+
+/***************************************************
+
+클라이언트 이벤트 : 숫자와 대쉬만 입력 제어 관련
+
+****************************************************/
+
+UtilTextBox.Textbox.prototype.NumericAndDash = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+    // (-) => 189 109,  (.) => 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) ||
+        event.keyCode == 189 || event.keyCode == 109 || event.keyCode == 189) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+
+/***************************************************
+
+클라이언트 이벤트 : 주민등록번호 관련
+
+****************************************************/
+// 주민등록번호 입력
+UtilTextBox.Textbox.prototype.JuminNoKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 주민번호 13자리를 체크한다.
+    if (thisone.value.length >= 13 && ((event.keyCode >= 96 && event.keyCode <= 105) || (event.keyCode >= 48 && event.keyCode <= 57))) {
+        event.returnValue = false;
+        return false;
+    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+
+/* thisone은 텍스트 박스의 이름 */
+UtilTextBox.Textbox.prototype.CheckJuminBunho = function (thisone) {
+
+    var i = 0;
+
+    if (thisone.value == '') {
+        return;
+    }
+
+    var str_jumin1 = this.Replace(thisone.value, '-').substring(0, 6);
+    var str_jumin2 = this.Replace(thisone.value, '-').substring(6, 13);
+
+    var checkImg = '';
+
+    var i3 = 0
+
+
+    for (i = 0; i < str_jumin1.length; i++) {
+        var ch1 = str_jumin1.substring(i, i + 1);
+        if (ch1 < '0' || ch1 > '9') {
+            i3 = i3 + 1
+        }
+    }
+
+    if ((str_jumin1 == '') || (i3 != 0)) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+        return;
+    }
+
+    var i4 = 0
+    for (var i = 0; i < str_jumin2.length; i++) {
+        var ch1 = str_jumin2.substring(i, i + 1);
+        if (ch1 < '0' || ch1 > '9') {
+            i4 = i4 + 1
+        }
+    }
+    if ((str_jumin2 == '') || (i4 != 0)) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+        return;
+    }
+
+    if (str_jumin1.substring(0, 1) < 4) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+        return;
+    }
+
+    if (str_jumin2.substring(0, 1) > 2) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+        return;
+    }
+
+    if ((str_jumin1.length > 7) || (str_jumin2.length > 8)) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+        return;
+    }
+
+    if ((str_jumin1 == '72') || (str_jumin2 == '18')) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+        return;
+    }
+
+    var f1 = str_jumin1.substring(0, 1);
+    var f2 = str_jumin1.substring(1, 2);
+    var f3 = str_jumin1.substring(2, 3);
+    var f4 = str_jumin1.substring(3, 4);
+    var f5 = str_jumin1.substring(4, 5);
+    var f6 = str_jumin1.substring(5, 6);
+    var hap = f1 * 2 + f2 * 3 + f3 * 4 + f4 * 5 + f5 * 6 + f6 * 7;
+    var l1 = str_jumin2.substring(0, 1);
+    var l2 = str_jumin2.substring(1, 2);
+    var l3 = str_jumin2.substring(2, 3);
+    var l4 = str_jumin2.substring(3, 4);
+    var l5 = str_jumin2.substring(4, 5);
+    var l6 = str_jumin2.substring(5, 6);
+    var l7 = str_jumin2.substring(6, 7);
+    hap = hap + l1 * 8 + l2 * 9 + l3 * 2 + l4 * 3 + l5 * 4 + l6 * 5;
+    hap = hap % 11;
+    hap = 11 - hap;
+    hap = hap % 10;
+
+    if (hap != l7) {
+        //alert('주민등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("주민등록번호를 확인하세요.", "");
+        //thisone.focus();
+        //thisone.select();
+        this.ShowJuminBunho(thisone);
+
+        return;
+    }
+
+    var i9 = 0;
+
+    this.ShowJuminBunho(thisone);
+}
+
+
+UtilTextBox.Textbox.prototype.ShowJuminBunho = function (thisone) {
+    //var jumin = Replace(thisone.value, '-') + '              ';            
+
+    if (thisone.value.length == 13) {
+        var str_jumin1 = this.Replace(thisone.value, '-').substring(0, 6);
+        var str_jumin2 = this.Replace(thisone.value, '-').substring(6, 13);
+        thisone.value = str_jumin1 + '-' + str_jumin2;
+    } else {
+        thisone.value = this.Replace(thisone.value, '-')
+    }
+}
+
+
+
+/***************************************************
+
+클라이언트 이벤트 : 사업자 번호 관련
+
+****************************************************/
+// 사업자등록번호 입력
+UtilTextBox.Textbox.prototype.BusinessNoKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 사업자등록번호 10자리를 체크한다.
+    if (thisone.value.length >= 10 && ((event.keyCode >= 96 && event.keyCode <= 105) || (event.keyCode >= 48 && event.keyCode <= 57))) {
+        event.returnValue = false;
+        return false;
+    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+//사업자 등록번호 체크
+UtilTextBox.Textbox.prototype.chkBusiness_no = function (thisone) {
+    if (thisone.value == '')
+        return;
+
+    var tmpValue = this.Replace(thisone.value, '-');
+
+    if (tmpValue.length != 10) {
+        //alert('사업자등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("사업자등록번호를 확인하세요.", "");
+        ShowBusiness_no(thisone);
+        thisone.focus();
+        thisone.select();
+        return false;
+    }
+
+    sumMod = 0;
+    sumMod += parseInt(tmpValue.substring(0, 1));
+    sumMod += parseInt(tmpValue.substring(1, 2)) * 3 % 10;
+    sumMod += parseInt(tmpValue.substring(2, 3)) * 7 % 10;
+    sumMod += parseInt(tmpValue.substring(3, 4)) * 1 % 10;
+    sumMod += parseInt(tmpValue.substring(4, 5)) * 3 % 10;
+    sumMod += parseInt(tmpValue.substring(5, 6)) * 7 % 10;
+    sumMod += parseInt(tmpValue.substring(6, 7)) * 1 % 10;
+    sumMod += parseInt(tmpValue.substring(7, 8)) * 3 % 10;
+    sumMod += Math.floor(parseInt(tmpValue.substring(8, 9)) * 5 / 10);
+    sumMod += parseInt(tmpValue.substring(8, 9)) * 5 % 10;
+    sumMod += parseInt(tmpValue.substring(9, 10));
+
+    if (sumMod % 10 != 0) {
+        //alert('사업자등록번호를 확인하세요.!!');
+        GtDivMsg.OpenInform("사업자등록번호를 확인하세요.", "");
+        ShowBusiness_no(thisone);
+        thisone.focus();
+        thisone.select();
+        return false;
+    }
+
+    ShowBusiness_no(thisone);
+    return true;
+}
+
+// XXXXXXXXXX을 사업자번호 형식으로 XX-XXX-XXXXX으로 만들어준다.
+UtilTextBox.Textbox.prototype.ShowBusiness_no = function (thisone) {
+    var tmpValue = this.Replace(thisone.value, '-') + '             ';
+
+    if (thisone.value.length == 10) {
+        thisone.value = tmpValue.substring(0, 3) + '-' + tmpValue.substring(3, 5) + '-' + tmpValue.substring(5, 10);
+    } else {
+        thisone.value = this.Replace(thisone.value, '-')
+    }
+}
+
+
+/***************************************************
+
+클라이언트 이벤트 : E_READER_INFO_PAGE 관련
+
+****************************************************/
+// E_READER_INFO_PAGE 입력
+UtilTextBox.Textbox.prototype.PageNoKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // 주민번호 8자리를 체크한다.
+    if (thisone.value.length >= 8 && ((event.keyCode >= 96 && event.keyCode <= 105) || (event.keyCode >= 48 && event.keyCode <= 57))) {
+        event.returnValue = false;
+        return false;
+    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+
+UtilTextBox.Textbox.prototype.ShowPageNo = function (thisone) {
+    if (thisone.value.length == 8) {
+        var str_Page1 = this.Replace(thisone.value, 'index.html').substring(0, 2);
+        var str_Page2 = this.Replace(thisone.value, 'index.html').substring(2, 4);
+        var str_Page3 = this.Replace(thisone.value, 'index.html').substring(4, 6);
+        var str_Page4 = this.Replace(thisone.value, 'index.html').substring(6, 8);
+
+        thisone.value = str_Page1 + '/' + str_Page2 + '/' + str_Page3 + '/' + str_Page4;
+    } else {
+        thisone.value = this.Replace(thisone.value, 'index.html')
+    }
+}
+
+
+/***************************************************
+
+클라이언트 이벤트 : 기계 번호 관련
+
+****************************************************/
+// 기계등록번호 입력
+UtilTextBox.Textbox.prototype.MachineNoKeyDown = function (thisone, isEnterTAB, TextMode, clickButtonID) {
+    if (event.keyCode == 13 && clickButtonID != '' && TextMode != 'MultiLine') {
+        var objBtn = document.getElementById(clickButtonID);
+
+        if (objBtn != null) {
+            objBtn.click();
+            thisone.focus();
+            thisone.select();
+        }
+    }
+
+    if (TextMode != 'MultiLine' && isEnterTAB == 'TAB') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 9;
+            return true;
+        }
+    } else if (TextMode != 'MultiLine' && isEnterTAB == 'ESC') {
+        // 텍스트 박스가 멀티라인이 아니고, 서버컨트롤 IsEnterTAB 속성이 TAB인경우에는 엔터키는 탭키로 전환한다.
+        if (event.keyCode == 13) {
+            event.keyCode = 27;
+
+            return true;
+        }
+    }
+
+    //    if(event.shiftKey)
+    //    {
+    //        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+    //        if( !(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36) )
+    //        {
+    //            event.returnValue = false;
+    //            return false;
+    //        }
+    //        else
+    //        {
+    //            return true;
+    //        }
+    //    }
+    //    
+    //    if(event.ctrlKey)
+    //    {
+    //        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+    //        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+    //        if(event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+    //           event.keyCode == 118 || event.keyCode == 86)
+    //        {
+    //            event.returnValue = true; 
+    //            return true;
+    //        }
+    //        else
+    //        {
+    //            event.returnValue = false;
+    //            return false;
+    //        }
+    //    }
+
+    //    // 기계등록번호 14자리를 체크한다.
+    //    if(thisone.value.length >= 14 && ((event.keyCode >= 96 && event.keyCode <= 105) || (event.keyCode >= 48 && event.keyCode <= 57)))
+    //    {
+    //        event.returnValue = false;
+    //        return false;
+    //    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    //    if(event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) || 
+    //            event.keyCode == 45 || event.keyCode == 46 || event.keyCode==144 || event.keyCode==20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191)
+    //    {
+    //        event.returnValue = true;
+    //    }
+    //    else
+    //    {
+    //        event.returnValue = false;
+    //    }
+}
+
+// XXXXXXXXXXXXXX을 기계번호 형식으로 XX-XXXX-XXXX-XXXX으로 만들어준다.
+UtilTextBox.Textbox.prototype.ShowMachineNo = function (thisone) {
+    var tmpValue = this.Replace(thisone.value, '-') + '              ';
+
+    if (thisone.value.length == 14) {
+        thisone.value = tmpValue.substring(0, 2) + '-' + tmpValue.substring(2, 6) + '-' + tmpValue.substring(6, 10) + '-' + tmpValue.substring(10, 14);
+    } else {
+        thisone.value = this.Replace(thisone.value, '-')
+    }
+}
+
+
+/******************************************************************************
+
+클라이언트 이벤트 : 주민등록번호 + 사업자등록번호 둘다 표시하는 텍스트박스
+
+*******************************************************************************/
+// IP 입력창의 점을 자동으로 찍어준다.
+UtilTextBox.Textbox.prototype.ShowJuminBusiness = function (thisone) {
+    var len = thisone.value.length;
+    var tmpValue = thisone.value;
+
+    // 주민등록번호도 아니고, 사업자등록번호도 아니면 돌려보낸다.
+    if (len != 13 && len != 10) {
+        return;
+    }
+
+    if (thisone.value.length == 13) {
+        var str_jumin1 = this.Replace(thisone.value, '-').substring(0, 6);
+        var str_jumin2 = this.Replace(thisone.value, '-').substring(6, 13);
+        thisone.value = str_jumin1 + '-' + str_jumin2;
+    } else if (thisone.value.length == 10) {
+        thisone.value = tmpValue.substring(0, 3) + '-' + tmpValue.substring(3, 5) + '-' + tmpValue.substring(5, 10);
+    } else {
+        thisone.value = this.Replace(thisone.value, '-')
+    }
+}
+
+
+/*******************************************************
+
+클라이언트 이벤트 : 달력 컨트롤 (입력단) 관련 메소드
+
+********************************************************/
+// 오직 숫자만 입력이 가능
+UtilTextBox.Textbox.prototype.CalendarKeyDown = function (thisone) {
+    if (event.keyCode == 13) {
+        event.keyCode = 9;
+        return true;
+    }
+
+    if (event.shiftKey) {
+        // 쉬프트를 누른상태에서의 탭, Home, End키는 살려둔다.
+        if (!(event.keyCode == 9 || event.keyCode == 35 || event.keyCode == 36)) {
+            event.returnValue = false;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    if (event.ctrlKey) {
+        // Ctrl-C, Ctrl-V, Ctrl-X, Ctrl-Z인 복사 / 붙여넣기 / 잘라내기 / 되살리기 기능을 지원한다.
+        // c : 99, C : 67, x : 120, X : 88, z : 122, Z : 90, v : 118, V : 86 
+        if (event.keyCode == 99 || event.keyCode == 67 || event.keyCode == 120 || event.keyCode == 88 || event.keyCode == 122 || event.keyCode == 90 ||
+            event.keyCode == 118 || event.keyCode == 86) {
+            event.returnValue = true;
+            return true;
+        } else {
+            event.returnValue = false;
+            return false;
+        }
+    }
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+    }
+}
+
+UtilTextBox.Textbox.prototype.CalendarKeyUp = function (thisone) {
+    if (event.ctrlKey || event.shiftKey || event.keyCode == 9) {
+        return false;
+    }
+
+
+    // - 189 109 . 110 190
+    // 아래 목록을 제외한 모든 키를 제한한다.
+    if (event.keyCode == 8 || event.keyCode == 9 || (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 33 && event.keyCode <= 40) ||
+        event.keyCode == 45 || event.keyCode == 46 || event.keyCode == 144 || event.keyCode == 20 || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 191) {
+        event.returnValue = true;
+    } else {
+        event.returnValue = false;
+        return false;
+    }
+
+    // 입력이 되는 순간 오류를 정정해준다.
+    if (thisone.value.length == 4) {
+        thisone.value = validateYear(thisone.value);
+    } else if (thisone.value.length == 6) {
+        var year = thisone.value.substring(0, 4);
+        year = validateYear(year);
+        thisone.value = year + validateMonth(thisone.value.substring(4, 6));
+    } else if (thisone.value.length == 8) {
+        var year = thisone.value.substring(0, 4);
+        var month = thisone.value.substring(4, 6);
+
+        year = validateYear(year);
+        month = validateMonth(month);
+
+        thisone.value = year + month + validateDate(year, month, thisone.value.substring(6, 8));
+    }
+}
+
+// division 제거하고 선택상태로 변경해준다.
+UtilTextBox.Textbox.prototype.CalendarSelect = function (thisone, division) {
+    thisone.value = this.Replace(thisone.value, division);
+    thisone.select();
+}
+
+UtilTextBox.Textbox.prototype.chkCalendarNo = function (thisone, controlType, division, boolChkDtRange, PrevDateCtlID, NextDateCtlID) {
+    if (thisone.value == '') {
+        return;
+    }
+
+    // 오늘 날짜를 구함
+    now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var date = now.getDate();
+
+    var strYear = '' + year;
+    var strMonth = makeDtFormat(month);
+    var strDate = makeDtFormat(date);
+
+    // 우선 입력된 값에서 구분자를 삭제한다.
+    var tmpValue = this.Replace(thisone.value, division);
+
+
+    if (tmpValue.length >= 4) {
+        strYear = validateYear(tmpValue.substring(0, 4));
+    }
+
+    if (tmpValue.length >= 6) {
+        strMonth = validateMonth(tmpValue.substring(4, 6));
+    }
+
+    if (tmpValue.length >= 8) {
+        strDate = validateDate(strDate, strMonth, tmpValue.substring(6, 8));
+    }
+
+    switch (controlType) {
+        case 'YYYYMMDD':
+            thisone.value = strYear + division + strMonth + division + strDate;
+            break;
+
+        case 'YYYYMM':
+            thisone.value = strYear + division + strMonth;
+            break;
+
+        case 'YYYY':
+            thisone.value = strYear;
+            break;
+    }
+
+    checkRange_DateControl(thisone, controlType, division, boolChkDtRange, PrevDateCtlID, NextDateCtlID);
+}
+
+
+UtilTextBox.Textbox.prototype.checkRange_DateControl = function (thisone, controlType, division, boolChkDtRange, PrevDateCtlID, NextDateCtlID) {
+    // 달력컨트롤 시작일 / 종료일 유효성검사를 시작
+    if (boolChkDtRange == 'True') {
+        var objPrev = document.getElementById(PrevDateCtlID);
+        var objNext = document.getElementById(NextDateCtlID);
+        var compareLength = 0;
+
+        switch (controlType) {
+            case 'YYYYMMDD':
+                compareLength = 8;
+                break;
+
+            case 'YYYYMM':
+                compareLength = 6;
+                break;
+
+            case 'YYYY':
+                compareLength = 4;
+                break;
+        }
+
+        if (objPrev != null) {
+            var startValue = this.Replace(objPrev.value, division);
+            var endValue = this.Replace(thisone.value, division);
+
+            if (startValue.length == compareLength && endValue.length == compareLength && startValue != '' && endValue != '' && startValue > endValue) {
+                //alert('종료일이 시작일보다 작습니다. 종료일을 수정하세요');
+
+                GtDivMsg.OpenInform("종료일이 시작일보다 작습니다. 종료일을 수정하세요.", "");
+
+                thisone.value = '';
+                thisone.focus();
+                event.returnValue = false;
+                return false;
+            }
+        }
+
+        if (objNext != null) {
+            var startValue = this.Replace(thisone.value, division);
+            var endValue = this.Replace(objNext.value, division);
+
+            if (startValue.length == compareLength && endValue.length == compareLength && startValue != '' && endValue != '' && startValue > endValue) {
+                //alert('종료일이 시작일보다 작습니다. 종료일을 수정하세요');
+
+                GtDivMsg.OpenInform("종료일이 시작일보다 작습니다. 종료일을 수정하세요.", "");
+
+                objNext.value = '';
+                objNext.focus();
+                event.returnValue = false;
+                return false;
+            }
+        }
+    }
+}
+
+UtilTextBox.Textbox.prototype.makeDtFormat = function (value) {
+    if (value < 10) {
+        return '0' + value;
+    } else {
+        return '' + value;
+    }
+}
+
+
+// 입력된 년도의 유효성을 검사한후 당년도 또는 입력된 년도를 리턴한다.
+UtilTextBox.Textbox.prototype.validateYear = function (value) {
+    // 오늘 날짜를 구함
+    now = new Date();
+    var defaultYear = now.getFullYear();
+
+    if (value.length < 4 || parseInt(value) > 2050 || parseInt(value) < 1900) {
+        return defaultYear + '';
+    }
+
+    return value;
+
+}
+
+// 입력된 년도의 유효성을 검사한후 당년도 또는 입력된 년도를 리턴한다.
+UtilTextBox.Textbox.prototype.validateMonth = function (value) {
+    // 오늘 날짜를 구함
+    now = new Date();
+    var defaultMonth = now.getMonth() + 1;
+
+    if (value.length < 2 || value > '12' || value < '01') {
+        return makeDtFormat(defaultMonth);
+    }
+
+    return value;
+
+}
+
+// 입력된 년도의 유효성을 검사한후 당년도 또는 입력된 년도를 리턴한다.
+UtilTextBox.Textbox.prototype.validateDate = function (year, month, value) {
+    // 각월의 마지막날짜
+    var aMonthDays = new Array('31', '28', '31', '30', '31', '30', '31', '31', '30', '31', '30', '31');
+
+    // 윤년을 구함
+    if (parseInt(year) % 4 == 0 || parseInt(year) % 100 == 0) {
+        aMonthDays[1] = '29';
+    } else {
+        aMonthDays[1] = '28';
+    }
+
+    // 일자는 잘못된 입력이 들어오면 해당월의 마지막일로 셋팅한다.
+    if (value.length < 2 || value > aMonthDays[parseInt(month) - 1] || value < '01') {
+        return aMonthDays[parseInt(month) - 1];
+    }
+
+    return value;
+}
+
+// 달력 팝업을 띄운다. 달력팝업의 주인 텍스트 박스, 팝업 URL, 달력 컨트롤 Type, 구분자, 팝업창 종료후 호출 자바 스크립트 를 매개변수로 넘겨주며
+// 현재 클릭된 위치를 기반으로 팝업창이 뜨는 위치를 지정해준다.
+UtilTextBox.Textbox.prototype.PopUpCalendar = function (targetTextbox, popUrl, calendarType, division, UserPopupCloseFunc, boolChkDtRange, PrevDateCtlID, NextDateCtlID) {
+
+    var PosLeft = '0px';
+    var PosTop = '0px';
+    var PosMx = event.offsetX;
+    var PosMy = event.offsetY;
+    var sPosMx = event.screenX;
+    var sPosMy = event.screenY;
+    PosLeft = sPosMx - PosMx + 'px';
+    PosTop = parseInt(PosTop) + sPosMy + (20 - PosMy);
+
+
+    var myObject = new Object();
+
+    myObject.CalendarType = calendarType;
+
+    myObject.Division = division;
+
+    //var rValue = window.showModalDialog(popUrl , myObject, "dialogWidth:162px; dialogHeight:205px;dialogLeft:" +PosLeft + ";dialogTop:" + PosTop +";scroll:no;resizable:no;help:0;");
+    var rValue = window.showModalDialog(popUrl, myObject, "dialogWidth:255px; dialogHeight:205px;dialogLeft:" + PosLeft + ";dialogTop:" + PosTop + ";scroll:no;resizable:no;help:0;status:no");
+
+    if (rValue != null) {
+        document.all[targetTextbox].value = rValue;
+
+
+        // 시작 / 종료일 범위 검색을 시작한다.
+        if (checkRange_DateControl(document.all[targetTextbox], calendarType, division, boolChkDtRange, PrevDateCtlID, NextDateCtlID) == false) {
+            event.returnValue = false;
+            return false;
+        }
+
+
+        if (UserPopupCloseFunc != '') {
+            try {
+                eval(UserPopupCloseFunc);
+            } catch (err) {}
+
+        }
+    }
+
+    event.returnValue = false;
+    return false;
+}
+
+
+/***************************************************
+
+기타 메소드 모음
+
+****************************************************/
+
+// 팝업창의 Onload 이벤트에서 사용하는 함수
+// parameter : thisone => opener, CompareURL => 부모창의 이름
+// ex) CheckOpener(opener, "CMN020S");
+// 기능 : 팝업창을 띄운 부모창이 CMS020S.asp가 아니라면 팝업창을 종료한다.
+//        팝업창의 부정적 호출을 방지하는데 그 이유가 있음... 특히 window.open() 함수를 이용해서 팝업창을 여는경우에는 필수
+UtilTextBox.Textbox.prototype.CheckOpener = function (thisone, CompareURL) {
+    CompareURL = CompareURL.toUpperCase();
+
+    if (thisone == null || thisone.location == null) {
+        //alert('비정상적인 접근을 허용하지않습니다.');
+
+        GtDivMsg.OpenInform("비정상적인 접근을 허용하지않습니다.", "");
+
+        event.returnValue = false;
+        self.close();
+        return false;
+    }
+
+    var openerURL = thisone.location.href;
+    var lastIdx = openerURL.lastIndexOf('index.html') + 1;
+
+    openerURL = openerURL.substring(lastIdx, openerURL.length).toUpperCase();
+
+    if (openerURL != CompareURL) {
+        //alert('비정상적인 접근을 허용하지않습니다.');
+        GtDivMsg.OpenInform("비정상적인 접근을 허용하지않습니다.", "");
+
+        event.returnValue = false;
+        self.close();
+        return false;
+    }
+}
+
+
+// DDL 컨트롤을 자바스크립트 단에서 Value 값을 이용해서 해당값을 선택하게 하는 메소드
+UtilTextBox.Textbox.prototype.SetDDLControl_Value = function (ddlName, findValue) {
+    var objDDL = document.getElementById(ddlName);
+
+    if (objDDL == null) {
+        return;
+    }
+
+    for (i = 0; i < objDDL.options.length; i++) {
+        if (objDDL.options[i].value == findValue) {
+            objDDL.options[i].selected = true;
+        }
+    }
+}
+
+// DDL 컨트롤을 자바스크립트 단에서 Text 값을 이용해서 해당값을 선택하게 하는 메소드
+UtilTextBox.Textbox.prototype.SetDDLControl_Text = function (ddlName, findValue) {
+    var objDDL = document.getElementById(ddlName);
+
+    if (objDDL == null) {
+        return;
+    }
+
+    for (i = 0; i < document.all[ddlName].options.length; i++) {
+        if (document.all[ddlName].options[i].text == findValue) {
+            document.all[ddlName].options[i].selected = true;
+        }
+    }
+}
+
+
+// 특정 컨트롤에 포커스를 위치시킨다.
+UtilTextBox.Textbox.prototype.SetFocus = function (controlName) {
+    var objControl = document.getElementById(controlName);
+
+    if ((objControl != null) && (objControl.type != 'hidden') && (objControl.disabled == false)) {
+        switch (objControl.type) {
+            case 'text':
+                objControl.focus();
+                objControl.select();
+                break;
+
+            case 'select-one':
+                objControl.focus();
+                break;
+
+            case 'image':
+                objControl.focus();
+                break;
+        }
+    }
+}
+
+
+// // 마우스 이벤트를 이벤트를 가로챈다.
+//document.onmousedown=click; 
+// 
+//UtilTextBox.Textbox.prototype.CommaFormat = function click(e)
+//{
+//    if(event.button == 2)
+//    {
+//       alert('시스템 보호를 위해 마우스 오른쪽버튼을 사용할 수 없습니다.');
+//    }
+//}
+
+
+// 모달 다이얼로그창에서 신규 입력후에 부모창의 그리드에 표시해주는 메소드
+UtilTextBox.Textbox.prototype.addGridRow = function (gridName, Message) {
+    var objShowTable = document.getElementById(gridName);
+    var tmpHTML = objShowTable.innerHTML;
+    var targetHTML = '';
+
+    if (tmpHTML.indexOf('<TR') != -1) {
+        targetHTML += tmpHTML.substring(0, tmpHTML.indexOf('<TR'));
+        targetHTML += " <TR style='background-color:White;height:24px;width :100%'>";
+        targetHTML += "<td class='RowInsertView_left' colspan='100'>" + Message + "</TD>\r\n";
+        targetHTML += " </TR>";
+        targetHTML += tmpHTML.substring(tmpHTML.indexOf('<TR'), tmpHTML.length);
+    } else {
+        targetHTML += " <TABLE cellspacing='1' cellpadding='0' rules='all' border='0' id='" + gridName + "' style='background-color:#0A246A;border-width:0px; width :100%'>";
+        targetHTML += " <TR style='background-color:White;height:24px;width :100%'>";
+        targetHTML += " <TD class='RowInsertView_left' colspan='100'>" + Message + "</TD>\r\n";
+        targetHTML += " </TR>";
+        targetHTML += " </TABLE>";
+    }
+
+    document.all['divList'].innerHTML = targetHTML;
+}
+
+
+// 페이지의 최상단 DIV 태크를 화면 해상도에 동적으로 변경되도록 한다.
+UtilTextBox.Textbox.prototype.setSizeTopDiv = function () {
+    var objDiv = document.getElementById('div_ycms');
+
+    if (objDiv != null) {
+        objDiv.style.height = window.screen.availHeight - 125;
+    }
+}

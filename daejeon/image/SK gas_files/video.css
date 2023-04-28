@@ -1,0 +1,133 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* network_01 */
+.pop_map .contents h1.video img {
+    width: 187px;
+}
+
+/* pop_qna- jay */
+.pop_map.pop_video .contents {
+    max-width: 690px;
+}
+
+.pop_map.pop_video .video_area {
+    width: 690px;
+    max-width: 690px;
+}
+
+.pop_map.pop_video .video_area .videoimg {
+    width: 690px;
+    max-width: 690px;
+    position: relative;
+}
+
+.pop_map.pop_video .video_area .videoimg .btn_play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -73px;
+    margin-left: -73px;
+}
+
+.pop_map.pop_video .video_area .timeline {
+    height: 6px;
+    background-color: #fff;
+    background-image: url(/Images/company/bar_img.png);
+    background-repeat: repeat-x;
+}
+
+.pop_map.pop_video .video_area .video_control {
+    background-color: #2b2b2b;
+    position: relative;
+    overflow: hidden;
+    height: 40px;
+    border-bottom: 1px solid #222222;
+}
+
+.pop_map.pop_video .video_area .video_control .btn {
+    position: absolute;
+    left: 10px;
+    top: 3px;
+}
+
+.pop_map.pop_video .video_area .video_control .video_time {
+    color: #fff;
+    font-size: 18px;
+    position: absolute;
+    right: 10px;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
+}
+
+.pop_map.pop_video .video_area .video_control .video_time span {
+    color: #ea002c;
+    letter-spacing: 2px;
+}
+
+.pop_map.pop_video .video_area .language {
+    background-color: #2b2b2b;
+    border-bottom: 1px solid #353535;
+    height: 30px;
+    position: relative;
+}
+
+.pop_map.pop_video .video_area .language .btn {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+
+.pop_map.pop_video .video_area .language .btn a {
+    margin-right: 5px;
+    width: 54px;
+    height: 21px;
+    display: inline-block;
+}
+
+.pop_map.pop_video .video_area .language .btn a img.on {
+    display: none;
+}
+
+.pop_map.pop_video .video_area .language .btn a img.off {
+    display: block;
+}
+
+.pop_map.pop_video .video_area .language .btn a:hover img.on {
+    display: block;
+}
+
+.pop_map.pop_video .video_area .language .btn a:hover img.off {
+    display: none;
+}
+
+.pop_map.pop_video .video_area .language .extension {
+    width: 37px;
+    height: 24px;
+    background: url(Images/company/w_line.jpg) repeat-y left top;
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-align: center;
+    padding-top: 6px;
+}
+
+.pop_map.pop_video .video_area .video_txt {
+    background-color: #fbfbfb;
+    border: 1px solid #e8e8e8;
+    margin-top: 10px;
+    padding: 15px;
+    height: 100px;
+    font-size: 13px;
+    color: #333;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scrollbar-face-color: #e8e8e8;
+    scrollbar-track-color: #ffffff;
+    scrollbar-arrow-color: #aaaaaa;
+    scrollbar-shadow-color: #e5e5e5;
+    scrollbar-darkshadow-color: #fff;
+    scrollbar-highlight-color: #e5e5e5;
+    scrollbar-3dlight-color: #e5e5e5;
+}

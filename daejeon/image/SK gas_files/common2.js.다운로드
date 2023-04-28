@@ -1,0 +1,1018 @@
+$(function() {
+    //$('.pop_map').hide();
+    // �꾩뾽�� �붿껌�� �곕씪 媛쒖씤�뺣낫 �섏쭛, �댁슜 �숈쓽�� ��젣 - 20140702
+    //$('.pop_qna').show();
+
+    $('.mapview').click(function () {
+        $('.pop_map').show();
+    });
+
+    $('.pop_close_btn').click(function () {
+        $(this).parent().parent().hide();
+    });
+})
+
+$(function() {
+    $('.translate_img').click(function() {
+        $('.translate_a_box').css('visibility','visible');
+    });
+
+    $('.bx-viewport').css("height", "77vh");
+})
+
+// $(window).on(function () {
+//     200803
+//        var $cs = $('.styled').customSelect();
+//        var $cs1 = $('.styled1').customSelect1();
+//     });
+    
+    $(function () {
+        $('.m_csr_img,.csr_img').hide();
+        $('.m_csr_img_01,.csr_img_01').show();
+    
+        $('.csr_ul li').bind('focusin click', function () {
+            $('.m_csr_img,.csr_img').hide();
+    
+    
+            var currentImg001 = $('.csr_slide_01').children("a").children("img").attr("src").replace("_on.html", "_off.html");
+            $('.csr_slide_01').children("a").children("img").attr("src", currentImg001);
+            $('.csr_slide_01').removeClass('active');
+            var currentImg002 = $('.csr_slide_02').children("a").children("img").attr("src").replace("_on.html", "_off.html");
+            $('.csr_slide_02').children("a").children("img").attr("src", currentImg002);
+            $('.csr_slide_02').removeClass('active');
+            var currentImg003 = $('.csr_slide_03').children("a").children("img").attr("src").replace("_on.html", "_off.html");
+            $('.csr_slide_03').children("a").children("img").attr("src", currentImg003);
+            $('.csr_slide_03').removeClass('active');
+    
+    
+            if ($(this).hasClass("active") != true) {
+                var currentImg22 = $(this).children("a").children("img").attr("src").replace("_off.html", "_on.html");
+                $(this).children("a").children("img").attr("src", currentImg22);
+            }
+    
+    
+    
+            var _csr_img = $(this).attr('class').split('csr_slide_');
+            var _csr_01 = '.csr_img_' + _csr_img[1];
+            var _csr_02 = '.m_csr_img_' + _csr_img[1];
+            $(this).addClass('active');
+    
+    
+    
+            $(_csr_01).show();
+            $(_csr_02).show();
+        });
+    });
+    
+    $(function () {
+    
+        // Dropp Down Menu //  /* 131104 GNB 硫붾돱��由� �먮땲硫붿씠�� �섏젙  */
+        $('.gnb > ul > li').hover(function () {
+            var _popnum5 = $(this).attr('class').split('gnb_');
+            var pop5 = '#gnb_sub_' + _popnum5[1];
+            var pop6 = '.sub_box.sub_' + _popnum5[1];
+            var pop7 = pop5 + ', ' + pop6;
+    
+            $('#gnb_sub_01, #gnb_sub_02,#gnb_sub_03,#gnb_sub_04,#gnb_sub_05,#gnb_sub_06, .sub_box').stop(true, true).slideUp('500');
+            $(pop7).stop(true, true).slideDown('500');
+        }, function () {
+            $('#gnb_sub_01, #gnb_sub_02,#gnb_sub_03,#gnb_sub_04,#gnb_sub_05,#gnb_sub_06, .sub_box').stop(true, true).slideUp('500');
+        });
+    
+    
+        
+        var is_click = false;
+        $('.btn_menu').click(function () {
+            if(is_click) {
+                $(".btn_menu > img").attr("src", '/img/ham.png');
+                is_click = false;
+            } else {
+                $(".btn_menu > img").attr("src", '/img/clear.png');
+                is_click = true;
+            }
+    
+            $('.mobile-menu').slideToggle(200);
+        });
+       
+    
+        /*$('.gnb ul li').focusin (function ()  {
+        $('#gnb_sub_01, .sub_box.sub_01').stop().slideDown('500') ;
+        });*/
+        $(".gnb > ul > li").bind('focusin ', function () {
+            var _popnum = $(this).attr('class').split('gnb_');
+            var pop2 = '#gnb_sub_' + _popnum[1];
+    
+            $(pop2).stop(true, true).slideDown();
+            $(this).children('ul').stop(true, true).slideDown();
+        });
+        $(".gnb .last").bind('focusout', function () {
+            $('#gnb_sub_01, #gnb_sub_02,#gnb_sub_03,#gnb_sub_04,#gnb_sub_05,#gnb_sub_06, .sub_box').stop(true, true).slideUp();
+        });
+    
+        $(".sub_box li a").bind('focusin mouseenter', function () {
+            $(this).css('background-color', '#ff7200');
+            $(this).css('color', '#292929')
+        });
+        $(".sub_box li a").bind('focusout mouseleave', function () {
+            $(this).css('background-color', '#393939');
+            $(this).css('color', '#fff')
+        });
+    
+        /* 131127異붽� �ㅽ궢�ㅻ퉬寃뚯씠�� */
+        if ($(window).width() > 640) {
+            $("#skipNavi").bind('focusin ', function () {
+                $(this).css('top', '0');
+            }).bind('focusout mouseleave', function () {
+                $(this).css('top', '-50px');
+            });
+        }
+    
+    
+    
+    
+        // GNB rollOver //
+        var parentId;
+        var childId;
+        //console.log($('#rightcolumn p a'));
+        $('.sub_group ul li a').bind('mouseenter focus', function (event) {
+            parentId = $(this).parent().parent().index() + 1;
+            childId = $(this).parent().index() + 1;
+            $(this).find('img').attr('src', '/Images/main/gnb0' + parentId + '_0' + childId + '_on.gif');
+        }).bind('mouseleave blur', function (event) {
+            for (i = 0; i < $(this).parent().length; i++) {
+                $(this).find('img:eq(' + i + ')').attr('src', '/Images/main/gnb0' + parentId + '_0' + childId + '_off.gif');
+            }
+        });
+    
+        // non empty input background //
+        $('input:text').bind('blur', function () {
+            if ($(this).val() != '') {
+                $(this).addClass('bg_none')
+            } else {
+                $(this).removeClass('bg_none')
+            }
+        }).blur();
+    
+        /* �섏젙 130801 tab_on/off */
+        $('.tab_menu li img').bind('mouseenter focus', function () {
+            var id = $(this).parent().index() + 1;
+            // var maxlen = $(this).parent().parent().find('li').length;
+            var _url = $(this).attr('src').split("tab_0");
+    
+            if ($(this).parent().hasClass('active')) return;
+            $('.tab_menu li:eq(' + (id - 1) + ')').find('img').attr('src', _url[0] + "tab_0" + id + '_on.gif');
+        }).bind('mouseleave blur', function () {
+            var id = $(this).parent().index() + 1;
+            var _url = $(this).attr('src').split("tab_0");
+            if ($(this).parent().hasClass('active')) return;
+            $('.tab_menu li:eq(' + (id - 1) + ')').find('img').attr('src', _url[0] + "tab_0" + id + '_off.gif');
+        })
+    
+        /* �섏젙 130801 梨꾩슜怨듦퀬 紐⑸줉 留덉슦�� 諛섏쓳 */
+        $("#career_list tr, .list #board tr").bind('mouseenter', function (event) {
+            var _flag = $(event.target.nodeName).parent().attr('id');
+            if (_flag == 'board tr') {
+                $(this).css('background-image', 'url(/Images/career/tr_bg.gif)');
+            } else {
+                $(this).css('background-image', 'url(/Images/career/tr_bg.gif)').find('td').addClass('red')
+            }
+        }).bind('mouseleave', function (event) {
+            var _flag = $(event.target.nodeName).parent().attr('id');
+            if (_flag == 'board') {
+                $(this).removeAttr('style');
+            } else {
+                $(this).removeAttr('style').find('td').removeClass('red');
+            }
+        });
+    
+        /* main_visual icon */
+        $('.main_quick li a').bind('mouseenter focus', function () {
+            var id = $(this).parent().index() + 1;
+            $('.main_quick li:eq(' + (id - 1) + ')').find('img').attr('src', '/Images/main/visual_quick_0' + id + '_on.png');
+        }).bind('mouseleave blur', function () {
+            var id = $(this).parent().index() + 1;
+            $('.main_quick li:eq(' + (id - 1) + ')').find('img').attr('src', '/Images/main/visual_quick_0' + id + '_off.png');
+        })
+    
+    });
+    
+    
+    
+    /* 131030 �섏젙 吏��꾪뙘�� */
+    $(document).ready(function () {
+    
+        $('.map_area ul li a').click(function () {
+            var zpop2 = $(this); /* 131127 異붽� */
+            var zpop = $(this).parent().attr('class').split('nmap_'); /* 131030 異붽� */
+            var zpop1 = '.nmap' + zpop[1]; /* 131030 異붽� */
+    
+            $(zpop1).show();
+            /* 131127 異붽� */
+            $(zpop1).focus();
+            $(zpop1).find('.pop_close_btn').click(function () {
+                $(zpop2).focus();
+            });
+    
+        });
+    });
+    
+    /* Left 硫붾돱 */
+    function getSecNavi(pageCode) {
+        $("#left_area > ul > li ul").hide();
+        $("#left_area > ul > li ul ul").hide(); //for IE6.0
+    
+        var $thisPage = $("#left_area > ul").find("[id='" + pageCode + "']");
+        if ($thisPage.contents("ul").length > 0) {
+            $thisPage.parent("ul").show();
+            $thisPage.contents("ul").show();
+        } else {
+            $thisPage.parent("ul").show();
+        }
+    
+    
+    }
+    
+    // // Left 硫붾돱 �대�吏� on 泥섎━
+    // function getMenuon(menuCode, gnbCode, parentCode) {
+    //     try {
+    //         var $thisMenu = $(".left_menu li").find("[name='" + menuCode + "']");
+    //         currentImg = $thisMenu.attr("src").replace("_off.gif", "_on.gif");
+    //         $thisMenu.attr("src", currentImg);
+    //     } catch (e) {}
+    //     try {
+    //         var $parentMenu = $(".left_menu li").find("[name='gd0" + parentCode + "']");
+    //         var $gnbMenu = $(".gnb li").find("[name='gnb0" + gnbCode + "']");
+    
+    //         currentImg2 = $parentMenu.attr("src").replace("_off.gif", "_on.gif");
+    //         $parentMenu.attr("src", currentImg2);
+    
+    //         if ($gnbMenu > 0) {
+    //             currentImg3 = $gnbMenu.attr("src").replace("_off.gif", "_on.gif")
+    //         };
+    //         $gnbMenu.attr("src", currentImg3);
+    //     } catch (e) {}
+    // }
+    
+    
+    /* 131028 硫붿씤 �숈옉 異붽�*/
+    //$(function () {
+    //    $(".csr").bind('mouseenter focusin', function () {
+    //        $(".c_act_01").stop().animate({ 'right': '330', 'z-index': '10', top: 210 }, 120, function () { /* 131030�섏젙 right媛� top媛� */
+    //            $(".c_act_02").stop().animate({ right: 180, 'z-index': '20', top: 64 }, 100, function () { /* 131030�섏젙 right媛� top媛� */
+    //                $(".c_act_03").stop().animate({ right: -20, 'z-index': '30', top: 210 }, 80); /* 131030�섏젙 right媛� top媛� */
+    //            });
+    //        });
+    //    });
+    //});
+    
+    /* 131105 function fit() if(w>979)�덉쑝濡� �대룞 
+    $(function () {
+    $(".invest").bind('mouseenter focusin', function () {
+    $(".i_act_01").stop().animate({ left: 750 }, 24000);
+    $(".i_act_02").stop().animate({ left: 680 }, 26000);
+    $(".i_act_03").stop().animate({ 'background-color': '#FF8224' }, 8000);
+    var ww = $(window).width();
+    $(".i_act_04").stop().animate({ left: ww / 10 }, 6000);
+    $(".i_act_05").stop().animate({ left: ww / 3 }, 8000);
+    $(".i_act_06").stop().animate({ left: ww / 1.6 }, 9000);
+    $(".i_act_07").stop().animate({ left: ww / 1.4 }, 10000);
+    $(".i_act_08").stop().animate({ left: ww / 1.2 }, 12000);
+    });
+    });
+    */
+    
+    function fit() {
+        var w = $(window).width(); // 釉뚮씪�곗��� width媛� 援ы빐��
+        if (w > 979) {
+            $(".csr").bind('mouseenter focusin', function () {
+                $(".c_act_01").stop().animate({
+                    'right': '330',
+                    'z-index': '10',
+                    top: 210
+                }, 120, function () {
+                    /* 131030�섏젙 right媛� top媛� */
+                    $(".c_act_02").stop().animate({
+                        right: 180,
+                        'z-index': '20',
+                        top: 64
+                    }, 100, function () {
+                        /* 131030�섏젙 right媛� top媛� */
+                        $(".c_act_03").stop().animate({
+                            right: -20,
+                            'z-index': '30',
+                            top: 210
+                        }, 80); /* 131030�섏젙 right媛� top媛� */
+                    });
+                });
+            });
+    
+            $(".business").bind('mouseenter focusin', function () {
+                $(".b_act_01").stop().animate({
+                    top: 0
+                }, 1200);
+    
+                $(".b_act_02_01").stop().animate({
+                    opacity: 1
+                }, 150, function () {
+                    $(".b_act_02_02").stop().animate({
+                        opacity: 1
+                    }, 170, function () {
+                        $(".b_act_02_03").stop().animate({
+                            opacity: 1
+                        }, 190, function () {
+                            $(".b_act_02_04").stop().animate({
+                                opacity: 1
+                            }, 220, function () {
+                                $(".b_act_02_05").stop().animate({
+                                    opacity: 1
+                                }, 260, function () {
+                                    $(".b_act_02_06").stop().animate({
+                                        opacity: 1
+                                    }, 300, function () {
+                                        $(".b_act_02_07").stop().animate({
+                                            opacity: 1
+                                        }, 350, function () {
+                                            $(".b_act_02_08").stop().animate({
+                                                opacity: 1
+                                            }, 1000);
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+                $(".b_act_03").stop().animate({
+                    top: 370
+                }, 1300);
+            });
+            $(".invest").bind('mouseenter focusin', function () {
+                $(".i_act_01").stop().animate({
+                    left: 750
+                }, 24000);
+                $(".i_act_02").stop().animate({
+                    left: 680
+                }, 26000);
+                $(".i_act_03").stop().animate({
+                    'background-color': '#FF8224'
+                }, 8000);
+                var ww = $(window).width();
+                $(".i_act_04").stop().animate({
+                    left: ww / 10
+                }, 6000);
+                $(".i_act_05").stop().animate({
+                    left: ww / 3
+                }, 8000);
+                $(".i_act_06").stop().animate({
+                    left: ww / 1.6
+                }, 9000);
+                $(".i_act_07").stop().animate({
+                    left: ww / 1.4
+                }, 10000);
+                $(".i_act_08").stop().animate({
+                    left: ww / 1.2
+                }, 12000);
+            });
+        }
+        if (w > 640 && w < 980) {
+            $(".csr").bind('mouseenter focusin', function () {
+                $(".c_act_04").stop().animate({
+                    'left': '46%',
+                    'z-index': '10',
+                    top: 310
+                }, 120, function () {
+                    /* 131030�섏젙 right媛� top媛� */
+                    $(".c_act_05").stop().animate({
+                        left: "58%",
+                        'z-index': '20',
+                        top: 110
+                    }, 100, function () {
+                        /* 131030�섏젙 right媛� top媛� */
+                        $(".c_act_06").stop().animate({
+                            left: "62%",
+                            'z-index': '30',
+                            top: 210
+                        }, 80); /* 131030�섏젙 right媛� top媛� */
+                    });
+                });
+            });
+    
+            $(".business").bind('mouseenter focusin', function () {
+                $(".bt_act_01").stop().animate({
+                    top: 0
+                }, 1200);
+                $(".bt_act_02").stop().animate({
+                    opacity: 1
+                }, 2000);
+                $(".bt_act_03").stop().animate({
+                    top: 439
+                }, 1300);
+            });
+            /* 131105 異붽� �쒕툝由용쾭�� */
+            $(".invest").bind('mouseenter focusin', function () {
+                var ww = $(window).width();
+                $(".i_act2_01").stop().animate({
+                    left: ww / 1.2
+                }, 19000);
+                $(".i_act2_02").stop().animate({
+                    left: ww / 1.4
+                }, 20000);
+                $(".i_act2_03").stop().animate({
+                    'background-color': '#FF8224'
+                }, 8000);
+                $(".i_act2_04").stop().animate({
+                    left: ww / 20
+                }, 6000);
+                $(".i_act2_05").stop().animate({
+                    left: ww / 4
+                }, 8000);
+                $(".i_act2_06").stop().animate({
+                    left: ww / 2
+                }, 9000);
+                $(".i_act2_07").stop().animate({
+                    left: ww / 1.3
+                }, 10000);
+            });
+        }
+    }
+    $(document).ready(function () {
+        fit();
+        $(window).resize(fit);
+    });
+    
+    $(function () {
+    
+    
+        s = 22; // maximum flare size
+        w = $('.career');
+        m = Math;
+        var ww = $('.career').width();
+    
+        fly = function (e) {
+    
+            t = m.random() * (w.height() - s); // top position
+            l = m.random() * (w.width() - s); // left position
+            o = m.random().toFixed(0.0); // opacity value
+            d = m.random() * (s) + 7; // flare size		
+            n = m.random() * 4000 + 3000; // duration  /*131029�섏젙*/
+    
+            //				n = 100;
+    
+            $(e)
+                .animate({
+                        left: l,
+                        top: t,
+                        width: d,
+                        height: d,
+                        opacity: o
+                    },
+                    n,
+                    function () {
+                        fly(e)
+                    }
+                );
+        };
+    
+        for (var i = 0; i < 30; i++) {
+            $('.career .act_area').append('<img class="fly" src="Images/main/heart_01.png">');
+        };
+        $('.career').stop().bind('focusin mouseenter', function () {
+            if (ww > 979) {
+    
+                $('.fly').each(function () {
+                    n = m.random() * (s - 1) + 1
+                    $(this).css({
+                        'left': w.width() / 2.1,
+                        'top': w.height() / 2.3,
+                        'width': n,
+                        'height': n
+                    })
+                    fly($(this));
+                });
+            };
+    
+            if (ww > 640 && ww < 980) {
+    
+                $('.fly').each(function () {
+                    n = m.random() * (s - 1) + 1
+                    $(this).css({
+                        'left': w.width() / 3,
+                        'top': w.height() / 1.8,
+                        'width': n,
+                        'height': n
+                    })
+                    fly($(this));
+                });
+            };
+        });
+    });
+    
+    function tabOn() {
+        $(".tab_menu ul li a").bind('focusin mouseenter', function () {
+            var www = $(window).width(); // 釉뚮씪�곗��� width媛� 援ы빐��
+            if (www > 640) {
+                if ($(this).parent().hasClass("act") != true) {
+                    $(this).parent().addClass('act');
+                    $(this).parent().css({
+                        'border-top': '4px solid #ea002c',
+                        'border-bottom': '4px solid #ea002c'
+                    });
+    
+                    $(this).bind('focusout mouseleave', function () {
+                        $(this).parent().removeClass('act');
+                        $(this).parent().css({
+                            'border-top': '4px solid #efeded',
+                            'border-bottom': '4px solid #efeded'
+                        });
+                    });
+                }
+            }
+    
+            if (www < 640) {
+                if ($(this).parent().hasClass("act") != true) {
+                    $(this).parent().addClass('act');
+                    $(this).parent().css({
+                        'border-top': '2px solid #ea002c',
+                        'border-bottom': '2px solid #ea002c'
+                    });
+    
+                    $(this).bind('focusout mouseleave', function () {
+                        $(this).parent().removeClass('act');
+                        $(this).parent().css({
+                            'border-top': '2px solid #efeded',
+                            'border-bottom': '2px solid #efeded'
+                        });
+                    });
+                }
+            }
+        });
+    }
+    
+    $(document).ready(function () {
+    // 200803
+    //    $('input.myClass').prettyCheckable();
+        tabOn();
+        $(window).resize(tabOn);
+    
+    
+    
+        // $("#left_area .left_menu > li").hover(function () {
+    
+        //         //$(this).contents("ul").show();
+        //         $(this).contents("ul").css("z-index", "10");
+        //         $(this).addClass("on");
+        //         $(this).children("ul").stop().slideDown(400);
+    
+        //     },
+        //     function () {
+    
+        //         //$(this).contents("ul").hide();
+        //         $(this).contents("ul").css("z-index", "");
+        //         $(this).removeClass("on");
+    
+        //         if ($(this).hasClass("active") != true) {
+        //             $(this).children("ul").stop().slideUp(400);
+    
+    
+        //         }
+    
+        //     }
+    
+        // );
+    
+    
+    
+    
+    
+    
+        // $(".left_menu li a").hover(
+        //     function () {
+        //         if ($(this).contents("img").attr("src").substring($(this).contents("img").attr("src").length - 6, $(this).contents("img").attr("src").length) == "_on.gif") {
+        //             $(this).contents("img").addClass("over");
+        //         } else {
+        //             var currentImg = $(this).contents("img").attr("src").replace("_off.gif", "_on.gif");
+        //             $(this).contents("img").attr("src", currentImg);
+        //         }
+    
+        //     },
+        //     function () {
+        //         if ($(this).contents("img").hasClass("over") != true) {
+    
+    
+        //             var currentImg = $(this).contents("img").attr("src").replace("_on.gif", "_off.gif");
+        //             $(this).contents("img").attr("src", currentImg);
+    
+        //             try {
+        //                 leftmenuOn();
+        //             } catch (e) {}
+    
+        //         }
+        //     }
+        // )
+    
+        // $(".left_menu li ul").hover(function () {
+        //     if ($(this).parent().hasClass("active") != true) {
+        //         var currentImg2 = $(this).parent().children("a").contents("img").attr("src").replace("_off.gif", "_on.gif");
+        //         $(this).parent().children("a").contents("img").attr("src", currentImg2);
+        //     }
+        // }, function () {
+        //     if ($(this).parent().hasClass("active") != true) {
+        //         var currentImg3 = $(this).parent().children("a").contents("img").attr("src").replace("_on.gif", "_off.gif");
+        //         $(this).parent().children("a").contents("img").attr("src", currentImg3);
+        //     }
+        // });
+    
+        // /* 131017 異붽� */
+        // $("#left_area .left_menu > li").focusin(function () {
+    
+        //     //$(this).contents("ul").show();
+        //     $(this).contents("ul").css("z-index", "10");
+        //     $(this).addClass("on");
+        //     $(this).children("ul").stop().slideDown(400);
+    
+        // });
+        // $("#left_area .left_menu > li").focusout(function () {
+    
+        //     //$(this).contents("ul").hide();
+        //     $(this).contents("ul").css("z-index", "");
+        //     $(this).removeClass("on");
+    
+        //     if ($(this).hasClass("active") != true) {
+        //         $(this).children("ul").stop(true, true).slideUp(400);
+        //     }
+    
+    
+        // });
+    
+        // $(".left_menu li ul").focusin(function () {
+        //     if ($(this).parent().hasClass("active") != true) {
+        //         var currentImg2 = $(this).parent().children("a").contents("img").attr("src").replace("_off.gif", "_on.gif");
+        //         $(this).parent().children("a").contents("img").attr("src", currentImg2);
+        //     }
+        // });
+        // $(".left_menu li ul").focusout(function () {
+        //     if ($(this).parent().hasClass("active") != true) {
+        //         var currentImg3 = $(this).parent().children("a").contents("img").attr("src").replace("_on.gif", "_off.gif");
+        //         $(this).parent().children("a").contents("img").attr("src", currentImg3);
+        //     }
+        // });
+    
+        // $(".left_menu li a").focusin(function () {
+        //     if ($(this).contents("img").attr("src").substring($(this).contents("img").attr("src").length - 6, $(this).contents("img").attr("src").length) == "_on.gif") {
+        //         $(this).contents("img").addClass("over");
+        //     } else {
+        //         var currentImg = $(this).contents("img").attr("src").replace("_off.gif", "_on.gif");
+        //         $(this).contents("img").attr("src", currentImg);
+        //     }
+    
+        // });
+    
+        // $(".left_menu li a").focusout(function () {
+        //     if ($(this).contents("img").hasClass("over") != true) {
+    
+    
+        //         var currentImg = $(this).contents("img").attr("src").replace("_on.gif", "_off.gif");
+        //         $(this).contents("img").attr("src", currentImg);
+    
+        //         try {
+        //             leftmenuOn();
+        //         } catch (e) {}
+    
+        //     }
+        // });
+    
+    
+    
+    });
+    /*
+    $(function(){
+    
+    $('.location ul li select').keypress (function(event) {
+    if(event.which == 13) {
+    var _sss =	$(this).attr("value");
+    location.href = $(this).attr("value");
+    alert(_sss);
+    }
+    });
+    });*/
+    /* 濡쒖��댁뀡 131102 �섏젙*/
+    function go_url(url) {
+    
+        var width_window = $(window).width();
+    
+        if (width_window < 641) {
+            location.href = url;
+        } else {
+            $('.location ul li select').keypress(function (event) {
+                if (event.which == 13) {
+                    location.href = url;
+                }
+            });
+    
+            $('.location ul li select').click(function (event) {
+                location.href = url;
+            });
+        }
+    }
+    
+    
+    /* 131018 異붽� (援�궡/�댁쇅 �ъ뾽�μ븞��) */
+    $(function () {
+        $('.map_area ul li a').focusin(function () {
+            $(this).parent().css('border', '2px dotted red');
+        });
+        $('.map_area ul li a').focusout(function () {
+            $(this).parent().css('border', 'none');
+        });
+    });
+    
+    
+    /* �명꽣 愿��⑥궗�댄듃 �⑤�由ъ궗�댄듃 131018 異붽� */
+    $(function () {
+    
+        $('.pop_f_link_01').hide();
+        $('.pop_f_link_02').hide();
+    
+        /*$('.f_link_01').click(function(){
+        $('.pop_f_link_02').show();
+        });*/
+    
+    });
+    
+    
+    
+    
+    /* faq */
+    /* 131030�섏젙 */
+    $(function () {
+    
+        $('.block a').bind('click', function () {
+            if ($(this).parent().parent('tr').hasClass('onToggle1')) {
+                $(this).parent().parent('tr').removeClass('onToggle1')
+                $('.close_box').css('display', 'none');
+    
+            } else {
+                $('.close_box').css('display', 'none');
+                $('.block a').parent().parent('tr').removeClass('onToggle1')
+    
+    
+                var _faqnum = $(this).parent().parent('tr').attr('class').split('toggle_');
+                var _faqnum1 = $(this).parent().parent('tr').attr('class').split('toggle2_');
+                var _faq_answer = '.open_box_' + _faqnum[1];
+                var _faq_answer1 = '.open_box_' + _faqnum1[1];
+    
+                $(this).parent().parent('tr').toggleClass('onToggle1');
+                $(_faq_answer).show();
+                $(_faq_answer1).show();
+    
+                /* $(this).parent().css('font-weight','bold');
+                $(this).parent().parent('tr').css('background','#fbfbfb');
+                $('.block').css('color','#010101');*/
+            }
+        });
+    
+    });
+    
+    
+    
+    /* press_list */
+    $(function () {
+        $('.list_block h3').bind('mouseenter focus', function () {
+            $(this).parent().parent().css('background', '#fbfbfb');
+    
+    
+        }).bind('mouseleave blur', function () {
+            $(this).parent().parent().css('background', '#fff');
+        });
+    
+    });
+    
+    //$(".slide_bg_1").css("animation", "imageScale 2s ease-out");
+    
+    
+    
+    
+    
+    // 硫붿씤�붾㈃ 濡ㅻ쭅 �띿뒪�� //
+    var ScrollControl = function (objId, options) {
+        this.init(objId, options);
+    }
+    ScrollControl.prototype = {
+        stage: {},
+        options: {},
+        isover: false,
+        freeze: true,
+        course: 'top',
+        itimes: 0,
+        top: 0,
+        init: function (objId, options) {
+            this.setOptions(options);
+            this.setStage(objId);
+            this.setTrueData();
+            this.move();
+        },
+        setOptions: function (options) {
+            options.inteval = options.inteval || 50;
+            options.freeze = options.freeze || 3000;
+            options.height = parseInt(options.height, 10) || 20;
+            options.style = options.style || 'scroll';
+            options.line = options.line || 1;
+            options.stopline = options.stopline || options.line;
+            options.reverse = options.reverse || '';
+            options.debug = options.debug || false;
+            options.blockHeight = options.height * options.line;
+            options.stopHeight = options.height * (options.stopline || options.line);
+            options.cMarginTop = 0;
+            options.cHeight = options.height - options.cMarginTop;
+            options.freeze = (options.style == 'no-freeze') ? options.inteval : options.freeze;
+            switch (options.style) {
+                case 'jump':
+                    options.style = options.style;
+                    break;
+                default:
+                    options.style = 'scroll';
+                    break;
+            }
+    
+            this.course = options.start || 'down';
+            this.options = options;
+        },
+        setTrueData: function () {
+            var cObjs = this.stage.childNodes;
+            var cObjLen = cObjs.length;
+            var removes = [];
+            for (var i = 0; i < cObjs.length; i++) {
+                if (!cObjs[i].tagName) {
+                    removes.push(cObjs[i]); //諛붾줈 ��젣 �� �곗씠�� 瑗ъ씠�붾벏 �섏뿬 �쇰떒 �듯븿. 
+                } else {
+                    cObjs[i].style.margin = "0";
+                    cObjs[i].style.marginTop = this.options.cMarginTop;
+                    cObjs[i].style.height = this.options.cHeight + 'px';
+                }
+            }
+            // 李얠� �곗씠�곕� ��젣��.(FF�� 寃쎌슦 text �몃뱶媛� 泥⑤���.) 
+            for (var i = 0; i < removes.length; i++) {
+                this.stage.removeChild(removes[i]);
+            }
+            if (!this.options.debug && cObjLen <= this.options.line) {
+                var attachLen = parseInt(this.options.line / cObjLen, 10);
+                for (var i = 0; i < attachLen; i++) {
+                    for (var j = 0; j < cObjLen; j++) {
+                        this.stage.appendChild(cObjs[j].cloneNode(true));
+                    }
+                }
+            }
+        },
+        setStage: function (objId) {
+            var This = this;
+            this.stage = document.getElementById(objId);
+            this.stage.style.height = this.options.blockHeight + 'px';
+            this.stage.style.padding = "0px";
+            this.stage.style.margin = "0px";
+            if (!this.options.debug)
+                this.stage.style.overflow = "hidden";
+    
+            this.stage.onmouseover = function () {
+                This.isover = true;
+            }
+            this.stage.onmouseout = function () {
+                This.isover = false;
+            }
+            this.stage.scrollTop = 0; //�뚰룺�먯꽌 由ы봽�섏떆 臾몄젣 
+        },
+        setCourse: function (course) {
+            if (this.course != 'down' && course == 'down' && this.stage.scrollTop <= 0) {
+                this.changeChild();
+                this.stage.scrollTop = this.options.height;
+            } else if (course == 'top' && this.stage.scrollTop >= this.options.height) {
+                if (this.options.reverse != 'all') {
+                    this.changeChild(this.options.line);
+                    this.stage.scrollTop = this.stage.scrollTop - this.options.stopHeight;
+                }
+            }
+            this.course = course;
+            if (this.itimes > 0) {
+                window.clearTimeout(this.itimes);
+                this.move();
+            }
+        },
+        changeChild: function (count) {
+            if (count == undefined) {
+                count = this.stage.childNodes.length - 1;
+            }
+            for (var i = 0; i < count; i++) {
+                this.stage.appendChild(this.stage.childNodes[0]); // ��긽 泥ル쾲吏멸쾬�� �ㅻ줈 �대룞 
+            }
+        },
+        actionTop: function () {
+            if (this.options.style == 'jump') {
+                this.changeChild(this.options.stopline);
+                this.stage.scrollTop = 0;
+                this.freeze = true;
+            } else {
+                this.top++;
+                this.stage.scrollTop++;
+                if (this.stage.scrollTop >= this.options.height) {
+                    this.changeChild(1);
+                    this.stage.scrollTop = this.stage.scrollTop - this.options.height;
+                    //if臾� �덉뿉 �덈뒗寃� �⑥쑉 
+                    if (this.top >= this.options.stopHeight) {
+                        this.top = 0;
+                        this.freeze = true;
+                        if (this.options.reverse == 'top' || this.options.reverse == 'all') this.setCourse("down");
+                    }
+                }
+            }
+        },
+        actionDown: function () {
+            if (this.options.style == 'jump') {
+                this.freeze = true;
+                for (var i = 0; i < this.options.stopline; i++) {
+                    this.changeChild();
+                }
+            } else {
+                this.top--;
+                this.stage.scrollTop--;
+                if (this.stage.scrollTop <= 0) {
+                    this.changeChild();
+                    this.stage.scrollTop = this.stage.scrollTop + this.options.height;
+                    //Math.abs 濡� 援ы븷 �� �덉�留�, Math�⑥닔媛� 臾닿굅�� 愿�怨꾨줈 �뚯닔 泥섎━��.(if臾� �덉뿉 �덈뒗寃� �⑥쑉) 
+                    if (-(this.top) >= this.options.stopHeight) {
+                        for (var i = 1; i < this.options.stopline; i++) {
+                            this.changeChild();
+                        }
+                        this.top = this.top + this.options.stopHeight;
+                        this.freeze = true;
+                    }
+                }
+            }
+            if (this.freeze) {
+                this.stage.scrollTop = this.options.stopHeight;
+                if (this.options.reverse == 'down' || this.options.reverse == 'all') this.setCourse("top");
+            }
+        },
+        move: function () {
+            this.itimes = 0;
+            if (!this.isover) {
+                if (this.course == 'top') this.actionTop();
+                else this.actionDown();
+            }
+            var This = this;
+            if (this.freeze) {
+                this.itimes = window.setTimeout(function () {
+                    This.move()
+                }, this.options.freeze);
+            } else {
+                window.setTimeout(function () {
+                    This.move()
+                }, this.options.inteval);
+            }
+            this.freeze = false;
+        }
+    }
+
+    // $(function() {
+        
+
+        
+    //     $(".bottom_menu_content_0")
+    //         .mouseenter(function(){
+    //             console.log("mouseenter");
+    //             $(".hover_bottom_menu_content_0").css("visibility","visible")
+    //             $(".bottom_menu_content_0").css("visibility", "hidden")
+    //         })
+    //         .mouseleave(function(){
+    //             $(".bottom_menu_content_0").css("visibility", "visible")
+    //             $(".hover_bottom_menu_content_0").css("visibility","hidden")
+    //         })
+    // })
+    
+
+    
+        
+   
+    
+    
+    
+    /* �ъ슜踰� Start*/
+    //    var scroll    = new ScrollControl('html element id',options); 
+    // 
+    //    options ��ぉ 
+    //    inteval : �ш��몄텧 �쒓컙 媛꾧꺽 1/1000珥�(湲곕낯媛� 50) 
+    //    freeze : �좎떆 硫덉떠 �덈뒗 �쒓컙 媛꾧꺽 1/1000 珥�(湲곕낯媛� 1000) 
+    //    height : 媛앹껜 �믪씠(湲곕낯媛� 20) 
+    //    cMarginTop : �먮룞�쇰줈 援ы빐二쇰굹, 湲��� �ш린�� 媛앹껜 �믪씠 �깆쑝濡� �명빐, �섎룄�� �믪씠媛� �섏삤吏� �딆쓣 �� �덇린 �뚮Ц�� �ъ슜�먭� 媛뺤젣 �낅젰��. 
+    //    line : �ㅽ겕濡� line瑜� 援ы븿.(�대떦 媛앹껜�� �믪씠�� line * height)媛� ��. 
+    //    stopline : 湲곕낯媛�(line�� 媛숈쓬), stopline �뺣낫�� �곕씪 line���� �낅┰�곸쑝濡� �ㅽ겕濡ㅼ쓣 freeze �쒗궡. 
+    //    start : 湲곕낯媛� 'top', top,down �� 媛믪씠 �덉쓬. 
+    //    reverse : [ | all | top | down ] 
+    //            none    - none媛� �꾨땶, 媛믪씠 �녿떎�� �살엫. �ㅼ젣媛� string ''媛� 
+    //            all        - ��, �꾨옒�� 紐⑤몢 reverse瑜� �쒗궡. �� �ㅼ젙�� �섎뒗 寃쎌슦 �꾩븘�섎줈 �붾떎媛붾떎 ��. 
+    //            top        - course媛� top�� 寃쎌슦, setCourse('down')�� �몄텧�� 
+    //            down    - course媛� down�� 寃쎌슦, setCourse('top')�� �몄텧�� 
+    //    style : [ scroll | jump | s-jump | jump-s ] 
+    //            scroll    - 湲곕낯 �ㅽ겕濡� 諛� setCourse �몄텧 �쒖뿉�� �ㅽ겕濡� �대룞. [湲곕낯��] 
+    //            jump    - 湲곕낯�쇰줈 �ㅼ쓬 ��ぉ�쇰줈 �먰봽 諛� setCourse �몄텧 �쒖뿉�� �먰봽 �대룞. 
+    //     
+    /* �ъ슜踰� End */
+    

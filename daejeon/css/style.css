@@ -1,0 +1,30 @@
+@charset "utf-8";
+@font-face {
+    font-family: noto;
+    src: url(../webfonts/NotoSansKR-Regular.woff) format("woff");
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+ul {
+    list-style: none;
+}
+a {
+    text-decoration: none;
+    color: #fff;
+}
+body {
+    font-family: noto;
+}
+.top {
+    background: #28323c;
+}
+.top div {
+    width: 1200px;
+    margin: 0 auto;
+}
+.menu ul li {
+    display: flex;
+}
